@@ -4,11 +4,12 @@
 
 ;;; Helper Functions
 
-;; Char String Integer -> (U String Boolean)
+;; (U Char 'any) String Integer -> (U String Boolean)
 (define (make-string-when-eqv char str index)
   (if (and (< index (string-length str))
-           (eqv? char (string-ref str index)))
-      (string char)
+           (or (eqv? char 'any)
+               (eqv? char (string-ref str index))))
+      (string (string-ref str index))
       #f))
 
 (define (make-string-when-in-range char-min char-max str index)
@@ -86,9 +87,8 @@
         [(pair? r) (make-string-when-in-range (car r) (cdr r) str start)]
         [else (error "bad char range format" r)])))
   (cond
-    [(or (and result (not opposed?))
-         (and (not result) opposed?))
-     result]
+    [(and result (not opposed?)) result]
+    [(and (not result) opposed?) (make-string-when-eqv 'any str start)]
     [else #f]))
 
 ;; Regex Integer Integer String Integer -> (U String #f)
