@@ -21,6 +21,7 @@
 (struct Backtrack [new-max continuation])
 (define backtrack-stack (make-parameter (void)))
 
+;; -> (U String #f)
 (define (try-backtrack)
   (if (non-empty-queue? (backtrack-stack))
       (let ([b (dequeue! (backtrack-stack))])
